@@ -29,8 +29,8 @@ app.post('/webhook/telegram', async (req, res) => {
     const message = req.body.message;
 
     if (message && message.text) {
-        const chatId = message.chat.id.toString();
-        const customerName = message.from.first_name || "Unknown";
+        const chatId = String(message.chat.id);
+        const customerName = message.from?.first_name || "Unknown";
         const incomingText = message.text;
 
         console.log(`[New Message] ${customerName}: ${incomingText}`);
@@ -41,6 +41,15 @@ app.post('/webhook/telegram', async (req, res) => {
                 update: { name: customerName },
                 create: { id: chatId, name: customerName, platform: "telegram" }
             });
+
+            if (incomingText.toLowerCase() === "/start" || incomingText.toLowerCase() === "/reset") {
+                await prisma.conversation.updateMany({
+                    where: { customerId: chatId, status: "assigned_to_human" },
+                    data: { status: "assigned_to_bot" }
+                });
+                await sendMessage(chatId, "Hello! I am back. How can I help you?");
+                return res.sendStatus(200);
+            }
 
             let conversation = await prisma.conversation.findFirst({
                 where: { customerId: chatId },
@@ -106,9 +115,13 @@ Rules:
                         }
                     });
                 } else {
-                    await sendMessage(chatId, botReply);
+                    try {
+  await sendMessage(chatId, botReply);
+} catch (sendErr) {
+  console.error('Failed to send message to chat', chatId, sendErr.response?.data || sendErr.message);
+}
 
-                    await prisma.message.create({
+await prisma.message.create({
                         data: {
                             conversationId: conversation.id,
                             sender: "bot",
