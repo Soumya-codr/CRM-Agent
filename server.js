@@ -84,8 +84,9 @@ Knowledge Base:
 ${formattedKB || "No information available."}
 
 Rules:
-1. If the user's query can be answered using the facts in the Knowledge Base, reply with the answer politely and concisely. Do not hallucinate or use any external knowledge.
-2. If the user's query CANNOT be answered using the Knowledge Base (i.e. the information is not present or they are asking for human support), reply EXACTLY with the token "[HANDOFF]" (without any other text).`;
+1. If the user is just saying hello or greeting you, reply with a polite greeting and ask how you can help.
+2. If the user's query can be answered using the facts in the Knowledge Base, reply with the answer politely and concisely. Do not hallucinate or use any external knowledge.
+3. If the user's query CANNOT be answered using the Knowledge Base and is not a simple greeting, reply EXACTLY with the token "[HANDOFF]" (without any other text).`;
 
                 const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
                 const prompt = `${systemInstruction}\n\nUser query: "${incomingText}"`;
