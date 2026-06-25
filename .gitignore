@@ -1,0 +1,10 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+server.log
+localtunnel.log
+scratch_check_db.js
+scratch_test_gemini.js
+
