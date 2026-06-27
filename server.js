@@ -146,7 +146,7 @@ app.get('/api/conversations/pending', async (req, res) => {
                 messages: { orderBy: { createdAt: 'asc' } },
                 customer: true
             },
-            orderBy: { updatedAt: 'desc' }
+            orderBy: { createdAt: 'desc' }
         });
         res.json(pendingChats);
     } catch (error) {
