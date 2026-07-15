@@ -41,7 +41,18 @@ model KnowledgeBase {
   id        String   @id @default(cuid())
   question  String
   answer    String
+  embedding Unsupported("vector(3072)")?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model DocumentChunk {
+  id           String   @id @default(cuid())
+  documentName String
+  content      String
+  embedding    Unsupported("vector(3072)")?
+  createdAt    DateTime @default(now())
+}
+
+
 
